@@ -1,59 +1,74 @@
-// Code to load card data and handle comparisons of multiple attributes
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include <iostream>
-#include <vector>
-#include <string>
-#include <algorithm>
+#define MAX_CARDS 100
 
-// Structure to represent a card
-struct Card {
-    std::string name;
-    int population;
-    double area;
-    double PIB;
-};
+typedef struct {
+    char name[50];
+    int attack;
+    int defense;
+    int speed;
+} Card;
 
-// Load card data from a blob
-std::vector<Card> loadData() {
-    std::vector<Card> cards;
-    // Simulate loading data from a blob (replace with actual loading logic)
-    // Example data
-    cards.push_back({"Card1", 5000000, 2000.5, 30000});
-    cards.push_back({"Card2", 3000000, 1500.0, 25000});
-    return cards;
-}
+Card cards[MAX_CARDS];
+int card_count = 0;
 
-// Function to compare two cards based on selected attribute
-int compareCards(const Card &a, const Card &b, int attribute) {
-    switch(attribute) {
-        case 1: // Compare by population
-            return a.population < b.population;
-        case 2: // Compare by area
-            return a.area < b.area;
-        case 3: // Compare by PIB
-            return a.PIB < b.PIB;
-        default:
-            return false;
+void register_card() {
+    if (card_count >= MAX_CARDS) {
+        printf("Card limit reached.\n");
+        return;
     }
+    printf("Enter card name: ");
+    scanf("%s", cards[card_count].name);
+    printf("Enter attack: ");
+    scanf("%d", &cards[card_count].attack);
+    printf("Enter defense: ");
+    scanf("%d", &cards[card_count].defense);
+    printf("Enter speed: ");
+    scanf("%d", &cards[card_count].speed);
+    card_count++;
+    printf("Card registered successfully!\n");
 }
 
-// Main function
+void load_cards_from_file(const char *filename) {
+    FILE *file = fopen(filename, "r");
+    if (!file) {
+        printf("Error opening file.\n");
+        return;
+    }
+    while (fscanf(file, "%49s %d %d %d", cards[card_count].name, &cards[card_count].attack, &cards[card_count].defense, &cards[card_count].speed) == 4) {
+        card_count++;
+    }
+    fclose(file);
+    printf("Cards loaded from file successfully!\n");
+}
+
+void display_menu() {
+    printf("1. Register Card\n");
+    printf("2. Load Cards from File\n");
+    printf("0. Exit\n");
+}
+
 int main() {
-    std::vector<Card> cards = loadData();
     int choice;
-
-    std::cout << "Select a comparison attribute:\n1. Population\n2. Area\n3. PIB\nChoice: ";
-    std::cin >> choice;
-
-    // Sort cards based on the chosen attribute
-    std::sort(cards.begin(), cards.end(), [choice](const Card &a, const Card &b) {
-        return compareCards(a, b, choice);
-    });
-
-    // Display sorted cards
-    for (const auto &card : cards) {
-        std::cout << card.name << ": Population: " << card.population << ", Area: " << card.area << ", PIB: " << card.PIB << '\n';
+    while (1) {
+        display_menu();
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        switch (choice) {
+            case 1:
+                register_card();
+                break;
+            case 2:
+                load_cards_from_file("cards.txt");
+                break;
+            case 0:
+                printf("Exiting...\n");
+                exit(0);
+            default:
+                printf("Invalid choice. Please try again.\n");
+        }
     }
-
     return 0;
 }
