@@ -1,66 +1,59 @@
-// Enhanced version of CartasSuperTrunfo.c
+// Code to load card data and handle comparisons of multiple attributes
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <iostream>
+#include <vector>
+#include <string>
+#include <algorithm>
 
-#define MAX_CARDS 100
-#define MAX_NAME_LENGTH 50
+// Structure to represent a card
+struct Card {
+    std::string name;
+    int population;
+    double area;
+    double PIB;
+};
 
-typedef struct {
-    char name[MAX_NAME_LENGTH];
-    int power;
-} Card;
+// Load card data from a blob
+std::vector<Card> loadData() {
+    std::vector<Card> cards;
+    // Simulate loading data from a blob (replace with actual loading logic)
+    // Example data
+    cards.push_back({"Card1", 5000000, 2000.5, 30000});
+    cards.push_back({"Card2", 3000000, 1500.0, 25000});
+    return cards;
+}
 
-Card cards[MAX_CARDS];
-int cardCount = 0;
-
-void compareCards(Card a, Card b) {
-    if (a.power > b.power) {
-        printf("%s has more power than %s.\n", a.name, b.name);
-    } else if (a.power < b.power) {
-        printf("%s has more power than %s.\n", b.name, a.name);
-    } else {
-        printf("%s and %s have equal power.\n", a.name, b.name);
+// Function to compare two cards based on selected attribute
+int compareCards(const Card &a, const Card &b, int attribute) {
+    switch(attribute) {
+        case 1: // Compare by population
+            return a.population < b.population;
+        case 2: // Compare by area
+            return a.area < b.area;
+        case 3: // Compare by PIB
+            return a.PIB < b.PIB;
+        default:
+            return false;
     }
 }
 
-void displayMenu() {
-    printf("Menu:\n");
-    printf("1. Compare two cards\n");
-    printf("2. Exit\n");
-}
-
+// Main function
 int main() {
-    // Sample card data
-    strcpy(cards[0].name, "Card A");
-    cards[0].power = 50;
-    strcpy(cards[1].name, "Card B");
-    cards[1].power = 75;
-    cardCount = 2;
-
+    std::vector<Card> cards = loadData();
     int choice;
-    while (1) {
-        displayMenu();
-        printf("Enter your choice: ");
-        scanf("%d", &choice);
-        if (choice == 1) {
-            int cardIndex1, cardIndex2;
-            printf("Enter index of first card (0 to %d): ", cardCount - 1);
-            scanf("%d", &cardIndex1);
-            printf("Enter index of second card (0 to %d): ", cardCount - 1);
-            scanf("%d", &cardIndex2);
-            if (cardIndex1 >= 0 && cardIndex1 < cardCount && cardIndex2 >= 0 && cardIndex2 < cardCount) {
-                compareCards(cards[cardIndex1], cards[cardIndex2]);
-            } else {
-                printf("Invalid card indices.\n");
-            }
-        } else if (choice == 2) {
-            printf("Exiting...\n");
-            break;
-        } else {
-            printf("Invalid choice.\n");
-        }
+
+    std::cout << "Select a comparison attribute:\n1. Population\n2. Area\n3. PIB\nChoice: ";
+    std::cin >> choice;
+
+    // Sort cards based on the chosen attribute
+    std::sort(cards.begin(), cards.end(), [choice](const Card &a, const Card &b) {
+        return compareCards(a, b, choice);
+    });
+
+    // Display sorted cards
+    for (const auto &card : cards) {
+        std::cout << card.name << ": Population: " << card.population << ", Area: " << card.area << ", PIB: " << card.PIB << '\n';
     }
+
     return 0;
 }
