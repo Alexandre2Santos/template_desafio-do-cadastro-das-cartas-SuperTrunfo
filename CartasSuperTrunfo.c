@@ -1,98 +1,66 @@
+// Enhanced version of CartasSuperTrunfo.c
+
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-int main()
-{
-    int pontosTuristicos1, pontosTuristicos2;
-    char carta1, carta2;
-    char estado1[20], estado2[20];
-    char nomeCity1[20], nomeCity2[20];
-    float populacao1, populacao2;
-    float area1, area2;
-    float pib1, pib2;
-    float densidade1, densidade2;
-    float pibPerCapita1, pibPerCapita2;
+#define MAX_CARDS 100
+#define MAX_NAME_LENGTH 50
 
-    // ===== PRIMEIRO ESTADO =====
-    printf("===== CARTA 1 =====\n");
+typedef struct {
+    char name[MAX_NAME_LENGTH];
+    int power;
+} Card;
 
-    printf("Digite o estado: ");
-    scanf("%s", estado1);
+Card cards[MAX_CARDS];
+int cardCount = 0;
 
-    printf("Digite o codigo da carta (uma letra): ");
-    scanf(" %c", &carta1);
+void compareCards(Card a, Card b) {
+    if (a.power > b.power) {
+        printf("%s has more power than %s.\n", a.name, b.name);
+    } else if (a.power < b.power) {
+        printf("%s has more power than %s.\n", b.name, a.name);
+    } else {
+        printf("%s and %s have equal power.\n", a.name, b.name);
+    }
+}
 
-    printf("Digite o nome da cidade: ");
-    scanf("%s", nomeCity1);
+void displayMenu() {
+    printf("Menu:\n");
+    printf("1. Compare two cards\n");
+    printf("2. Exit\n");
+}
 
-    printf("Digite a populacao: ");
-    scanf("%f", &populacao1);
+int main() {
+    // Sample card data
+    strcpy(cards[0].name, "Card A");
+    cards[0].power = 50;
+    strcpy(cards[1].name, "Card B");
+    cards[1].power = 75;
+    cardCount = 2;
 
-    printf("Digite a area (km2): ");
-    scanf("%f", &area1);
-
-    printf("Digite o PIB: ");
-    scanf("%f", &pib1);
-
-    printf("Digite o numero de pontos turisticos: ");
-    scanf("%d", &pontosTuristicos1);
-
-    // ===== SEGUNDO ESTADO =====
-    printf("\n===== CARTA 2 =====\n");
-
-    printf("Digite o estado: ");
-    scanf("%s", estado2);
-
-    printf("Digite o codigo da carta (uma letra): ");
-    scanf(" %c", &carta2);
-
-    printf("Digite o nome da cidade: ");
-    scanf("%s", nomeCity2);
-
-    printf("Digite a populacao: ");
-    scanf("%f", &populacao2);
-
-    printf("Digite a area (km2): ");
-    scanf("%f", &area2);
-
-    printf("Digite o PIB: ");
-    scanf("%f", &pib2);
-
-    printf("Digite o numero de pontos turisticos: ");
-    scanf("%d", &pontosTuristicos2);
-
-    // ===== CÁLCULOS =====
-    densidade1 = populacao1 / area1;
-    densidade2 = populacao2 / area2;
-
-    pibPerCapita1 = pib1 / populacao1;
-    pibPerCapita2 = pib2 / populacao2;
-
-    printf("\nCadastro realizado com sucesso!\n");
-
-    // ===== EXIBIÇÃO DOS RESULTADOS =====
-    printf("\n\n===== DADOS DAS CARTAS =====\n");
-
-    printf("\n--- CARTA 1 ---\n");
-    printf("Estado: %s\n", estado1);
-    printf("Codigo: %c\n", carta1);
-    printf("Cidade: %s\n", nomeCity1);
-    printf("Populacao: %.2f\n", populacao1);
-    printf("Area: %.2f km2\n", area1);
-    printf("PIB: %.2f\n", pib1);
-    printf("Pontos Turisticos: %d\n", pontosTuristicos1);
-    printf("Densidade Populacional: %.2f hab/km2\n", densidade1);
-    printf("PIB per Capita: %.2f\n", pibPerCapita1);
-
-    printf("\n--- CARTA 2 ---\n");
-    printf("Estado: %s\n", estado2);
-    printf("Codigo: %c\n", carta2);
-    printf("Cidade: %s\n", nomeCity2);
-    printf("Populacao: %.2f\n", populacao2);
-    printf("Area: %.2f km2\n", area2);
-    printf("PIB: %.2f\n", pib2);
-    printf("Pontos Turisticos: %d\n", pontosTuristicos2);
-    printf("Densidade Populacional: %.2f hab/km2\n", densidade2);
-    printf("PIB per Capita: %.2f\n", pibPerCapita2);
-
+    int choice;
+    while (1) {
+        displayMenu();
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+        if (choice == 1) {
+            int cardIndex1, cardIndex2;
+            printf("Enter index of first card (0 to %d): ", cardCount - 1);
+            scanf("%d", &cardIndex1);
+            printf("Enter index of second card (0 to %d): ", cardCount - 1);
+            scanf("%d", &cardIndex2);
+            if (cardIndex1 >= 0 && cardIndex1 < cardCount && cardIndex2 >= 0 && cardIndex2 < cardCount) {
+                compareCards(cards[cardIndex1], cards[cardIndex2]);
+            } else {
+                printf("Invalid card indices.\n");
+            }
+        } else if (choice == 2) {
+            printf("Exiting...\n");
+            break;
+        } else {
+            printf("Invalid choice.\n");
+        }
+    }
     return 0;
 }
