@@ -46,8 +46,10 @@ void compare_cartas(int carta1, int carta2);               // Compara duas carta
 void remover_carta();                                      // Remove uma carta
 void inicializar_cartas_amostra();                         // Inicializa cartas de exemplo
 
-void mostrar_menu(); // Mostra o menu principal
-void compare_menu(); // Menu para comparação de cartas
+void mostrar_menu();                                                     // Mostra o menu principal
+void compare_menu();                                                     // Menu para comparação de cartas
+void mostrar_atributos_menu();                                           // Mostra o menu de seleção de atributos
+void comparar_atributo_especifico(int carta1, int carta2, int atributo); // Compara um atributo específico
 
 // Função principal com loop do menu
 int main()
@@ -277,12 +279,12 @@ void mostrar_cartas()
     for (int i = 0; i < carta_count; i++) // Loop para cada carta
     {
         printf("Cartao %d: %s\n", i + 1, cartas[i].nome);
-        printf(" População: %d\n", cartas[i].populacao);
-        printf(" Área: %.2f\n", cartas[i].area);
+        printf(" Populacao: %d\n", cartas[i].populacao);
+        printf(" Area: %.2f\n", cartas[i].area);
         printf(" PIB: %.2f\n", cartas[i].pib);
         printf(" Densidade: %.2f\n", cartas[i].densidade);
         printf(" PIB per capita: %.2f\n", cartas[i].pib_per_capita);
-        printf(" Pontos Turísticos: %d\n\n", cartas[i].pontos_turisticos);
+        printf(" Pontos Turisticos: %d\n\n", cartas[i].pontos_turisticos);
     }
 }
 
@@ -307,12 +309,12 @@ void registrar_carta()
         }
     }
     // Lê os atributos da carta
-    cartas[carta_count].populacao = ler_int("Digite a população: ", 0, INT_MAX);
-    cartas[carta_count].area = ler_float("Digite a área: ", 0.0f, 1e12f);
+    cartas[carta_count].populacao = ler_int("Digite a populacao: ", 0, INT_MAX);
+    cartas[carta_count].area = ler_float("Digite a area: ", 0.0f, 1e12f);
     cartas[carta_count].pib = ler_float("Digite o PIB: ", 0.0f, 1e18f);
     cartas[carta_count].densidade = ler_float("Digite a densidade: ", 0.0f, 1e9f);
     cartas[carta_count].pib_per_capita = ler_float("Digite o PIB per capita: ", 0.0f, 1e12f);
-    cartas[carta_count].pontos_turisticos = ler_int("Digite os pontos turísticos: ", 0, MAX_CARTAS);
+    cartas[carta_count].pontos_turisticos = ler_int("Digite os pontos turisticos: ", 0, MAX_CARTAS);
     carta_count++; // Incrementa o contador
     printf("Cartao registrado!\n");
     salvar_cartas("cartas.txt"); // Salva no arquivo
@@ -342,44 +344,74 @@ void remover_carta()
 
 void compare_cartas(int carta1, int carta2)
 {
-    printf("Comparando %s e %s:\n", cartas[carta1].nome, cartas[carta2].nome);
+    // Compara todos os atributos automaticamente
+    printf("\n=== Comparacao Completa: %s vs %s ===\n", cartas[carta1].nome, cartas[carta2].nome);
 
-    // Compara cada atributo e determina o vencedor (maior valor ganha)
     // Comparar população
-    printf("População: %s (%d) vs %s (%d) - %s vence\n",
+    printf("\nPopulacao: %s (%d) vs %s (%d)",
            cartas[carta1].nome, cartas[carta1].populacao,
-           cartas[carta2].nome, cartas[carta2].populacao,
-           (cartas[carta1].populacao > cartas[carta2].populacao ? cartas[carta1].nome : cartas[carta2].nome));
+           cartas[carta2].nome, cartas[carta2].populacao);
+    if (cartas[carta1].populacao > cartas[carta2].populacao)
+        printf(" -> %s vence\n", cartas[carta1].nome);
+    else if (cartas[carta2].populacao > cartas[carta1].populacao)
+        printf(" -> %s vence\n", cartas[carta2].nome);
+    else
+        printf(" -> Empate\n");
 
     // Comparar área
-    printf("Área: %s (%.2f) vs %s (%.2f) - %s vence\n",
+    printf("Area: %s (%.2f) vs %s (%.2f)",
            cartas[carta1].nome, cartas[carta1].area,
-           cartas[carta2].nome, cartas[carta2].area,
-           (cartas[carta1].area > cartas[carta2].area ? cartas[carta1].nome : cartas[carta2].nome));
+           cartas[carta2].nome, cartas[carta2].area);
+    if (cartas[carta1].area > cartas[carta2].area)
+        printf(" -> %s vence\n", cartas[carta1].nome);
+    else if (cartas[carta2].area > cartas[carta1].area)
+        printf(" -> %s vence\n", cartas[carta2].nome);
+    else
+        printf(" -> Empate\n");
 
     // Comparar PIB
-    printf("PIB: %s (%.2f) vs %s (%.2f) - %s vence\n",
+    printf("PIB: %s (%.2f) vs %s (%.2f)",
            cartas[carta1].nome, cartas[carta1].pib,
-           cartas[carta2].nome, cartas[carta2].pib,
-           (cartas[carta1].pib > cartas[carta2].pib ? cartas[carta1].nome : cartas[carta2].nome));
+           cartas[carta2].nome, cartas[carta2].pib);
+    if (cartas[carta1].pib > cartas[carta2].pib)
+        printf(" -> %s vence\n", cartas[carta1].nome);
+    else if (cartas[carta2].pib > cartas[carta1].pib)
+        printf(" -> %s vence\n", cartas[carta2].nome);
+    else
+        printf(" -> Empate\n");
 
-    // Comparar densidade (nota: menor densidade pode ser melhor, mas aqui comparamos maior)
-    printf("Densidade: %s (%.2f) vs %s (%.2f) - %s vence\n",
+    // Comparar densidade
+    printf("Densidade: %s (%.2f) vs %s (%.2f)",
            cartas[carta1].nome, cartas[carta1].densidade,
-           cartas[carta2].nome, cartas[carta2].densidade,
-           (cartas[carta1].densidade > cartas[carta2].densidade ? cartas[carta1].nome : cartas[carta2].nome));
+           cartas[carta2].nome, cartas[carta2].densidade);
+    if (cartas[carta1].densidade > cartas[carta2].densidade)
+        printf(" -> %s vence\n", cartas[carta1].nome);
+    else if (cartas[carta2].densidade > cartas[carta1].densidade)
+        printf(" -> %s vence\n", cartas[carta2].nome);
+    else
+        printf(" -> Empate\n");
 
     // Comparar PIB per capita
-    printf("PIB per capita: %s (%.2f) vs %s (%.2f) - %s vence\n",
+    printf("PIB per capita: %s (%.2f) vs %s (%.2f)",
            cartas[carta1].nome, cartas[carta1].pib_per_capita,
-           cartas[carta2].nome, cartas[carta2].pib_per_capita,
-           (cartas[carta1].pib_per_capita > cartas[carta2].pib_per_capita ? cartas[carta1].nome : cartas[carta2].nome));
+           cartas[carta2].nome, cartas[carta2].pib_per_capita);
+    if (cartas[carta1].pib_per_capita > cartas[carta2].pib_per_capita)
+        printf(" -> %s vence\n", cartas[carta1].nome);
+    else if (cartas[carta2].pib_per_capita > cartas[carta1].pib_per_capita)
+        printf(" -> %s vence\n", cartas[carta2].nome);
+    else
+        printf(" -> Empate\n");
 
     // Comparar pontos turísticos
-    printf("Pontos turísticos: %s (%d) vs %s (%d) - %s vence\n",
+    printf("Pontos turisticos: %s (%d) vs %s (%d)",
            cartas[carta1].nome, cartas[carta1].pontos_turisticos,
-           cartas[carta2].nome, cartas[carta2].pontos_turisticos,
-           (cartas[carta1].pontos_turisticos > cartas[carta2].pontos_turisticos ? cartas[carta1].nome : cartas[carta2].nome));
+           cartas[carta2].nome, cartas[carta2].pontos_turisticos);
+    if (cartas[carta1].pontos_turisticos > cartas[carta2].pontos_turisticos)
+        printf(" -> %s vence\n\n", cartas[carta1].nome);
+    else if (cartas[carta2].pontos_turisticos > cartas[carta1].pontos_turisticos)
+        printf(" -> %s vence\n\n", cartas[carta2].nome);
+    else
+        printf(" -> Empate\n\n");
 }
 
 void mostrar_menu()
@@ -403,5 +435,149 @@ void compare_menu()
     int carta1 = ler_int("Entre com o indice do primeiro cartao a comparar: ", 1, carta_count);
     int carta2 = ler_int("Entre com o indice do segundo cartao a comparar: ", 1, carta_count);
 
-    compare_cartas(carta1 - 1, carta2 - 1); // Chama a função de comparação (índices baseados em 0)
+    int opcao = -1;
+    // Loop para permitir múltiplas comparações
+    while (opcao != 0)
+    {
+        mostrar_atributos_menu();
+        opcao = ler_int("Escolha um atributo para comparar (0 para voltar): ", 0, 7);
+        if (opcao != 0)
+        {
+            comparar_atributo_especifico(carta1 - 1, carta2 - 1, opcao);
+        }
+    }
+}
+
+void mostrar_atributos_menu()
+{
+    printf("\n=== Menu de Atributos ===");
+    printf("\n1. Populacao\n");
+    printf("2. Area\n");
+    printf("3. PIB\n");
+    printf("4. Densidade\n");
+    printf("5. PIB per capita\n");
+    printf("6. Pontos turisticos\n");
+    printf("7. Comparar todos\n");
+    printf("0. Voltar ao menu principal\n");
+}
+
+void comparar_atributo_especifico(int carta1, int carta2, int atributo)
+{
+    switch (atributo)
+    {
+    case 1:
+        // Comparar população
+        printf("\n--- Comparacao de Populacao ---\n");
+        printf("%s: %d habitantes\n", cartas[carta1].nome, cartas[carta1].populacao);
+        printf("%s: %d habitantes\n", cartas[carta2].nome, cartas[carta2].populacao);
+        if (cartas[carta1].populacao > cartas[carta2].populacao)
+        {
+            printf("Vencedor: %s\n\n", cartas[carta1].nome);
+        }
+        else if (cartas[carta2].populacao > cartas[carta1].populacao)
+        {
+            printf("Vencedor: %s\n\n", cartas[carta2].nome);
+        }
+        else
+        {
+            printf("Empate!\n\n");
+        }
+        break;
+    case 2:
+        // Comparar área
+        printf("\n--- Comparacao de Area ---\n");
+        printf("%s: %.2f km²\n", cartas[carta1].nome, cartas[carta1].area);
+        printf("%s: %.2f km²\n", cartas[carta2].nome, cartas[carta2].area);
+        if (cartas[carta1].area > cartas[carta2].area)
+        {
+            printf("Vencedor: %s\n\n", cartas[carta1].nome);
+        }
+        else if (cartas[carta2].area > cartas[carta1].area)
+        {
+            printf("Vencedor: %s\n\n", cartas[carta2].nome);
+        }
+        else
+        {
+            printf("Empate!\n\n");
+        }
+        break;
+    case 3:
+        // Comparar PIB
+        printf("\n--- Comparacao de PIB ---\n");
+        printf("%s: %.2f bilhoes\n", cartas[carta1].nome, cartas[carta1].pib);
+        printf("%s: %.2f bilhoes\n", cartas[carta2].nome, cartas[carta2].pib);
+        if (cartas[carta1].pib > cartas[carta2].pib)
+        {
+            printf("Vencedor: %s\n\n", cartas[carta1].nome);
+        }
+        else if (cartas[carta2].pib > cartas[carta1].pib)
+        {
+            printf("Vencedor: %s\n\n", cartas[carta2].nome);
+        }
+        else
+        {
+            printf("Empate!\n\n");
+        }
+        break;
+    case 4:
+        // Comparar densidade
+        printf("\n--- Comparacao de Densidade ---\n");
+        printf("%s: %.2f hab/km²\n", cartas[carta1].nome, cartas[carta1].densidade);
+        printf("%s: %.2f hab/km²\n", cartas[carta2].nome, cartas[carta2].densidade);
+        if (cartas[carta1].densidade > cartas[carta2].densidade)
+        {
+            printf("Vencedor: %s\n\n", cartas[carta1].nome);
+        }
+        else if (cartas[carta2].densidade > cartas[carta1].densidade)
+        {
+            printf("Vencedor: %s\n\n", cartas[carta2].nome);
+        }
+        else
+        {
+            printf("Empate!\n\n");
+        }
+        break;
+    case 5:
+        // Comparar PIB per capita
+        printf("\n--- Comparacao de PIB per Capita ---\n");
+        printf("%s: %.2f\n", cartas[carta1].nome, cartas[carta1].pib_per_capita);
+        printf("%s: %.2f\n", cartas[carta2].nome, cartas[carta2].pib_per_capita);
+        if (cartas[carta1].pib_per_capita > cartas[carta2].pib_per_capita)
+        {
+            printf("Vencedor: %s\n\n", cartas[carta1].nome);
+        }
+        else if (cartas[carta2].pib_per_capita > cartas[carta1].pib_per_capita)
+        {
+            printf("Vencedor: %s\n\n", cartas[carta2].nome);
+        }
+        else
+        {
+            printf("Empate!\n\n");
+        }
+        break;
+    case 6:
+        // Comparar pontos turísticos
+        printf("\n--- Comparacao de Pontos Turisticos ---\n");
+        printf("%s: %d pontos\n", cartas[carta1].nome, cartas[carta1].pontos_turisticos);
+        printf("%s: %d pontos\n", cartas[carta2].nome, cartas[carta2].pontos_turisticos);
+        if (cartas[carta1].pontos_turisticos > cartas[carta2].pontos_turisticos)
+        {
+            printf("Vencedor: %s\n\n", cartas[carta1].nome);
+        }
+        else if (cartas[carta2].pontos_turisticos > cartas[carta1].pontos_turisticos)
+        {
+            printf("Vencedor: %s\n\n", cartas[carta2].nome);
+        }
+        else
+        {
+            printf("Empate!\n\n");
+        }
+        break;
+    case 7:
+        // Comparar todos os atributos
+        compare_cartas(carta1, carta2);
+        break;
+    default:
+        printf("Opcao invalida!\n");
+    }
 }
